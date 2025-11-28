@@ -24,7 +24,7 @@ function pod_importer_activate() {
 }
 
 function pod_importer_deactivate() {
-    wp_clear_scheduled_hook('pod_importer_cron_event');
+    wp_unschedule_hook('pod_importer_cron_event');
 }
 
 add_filter('cron_schedules', function($schedules){
@@ -44,17 +44,8 @@ function pod_importer_save_feeds($feeds) {
 }
 
 function pod_importer_register_schedules() {
-    // A more robust way to clear all scheduled hooks for this event.
-    $crons = _get_cron_array();
-    if (!empty($crons)) {
-        foreach ($crons as $timestamp => $cron) {
-            if (isset($cron['pod_importer_cron_event'])) {
-                foreach ($cron['pod_importer_cron_event'] as $key => $event) {
-                    wp_unschedule_event($timestamp, 'pod_importer_cron_event', $event['args']);
-                }
-            }
-        }
-    }
+    // Clear all previously scheduled cron jobs for this hook.
+    wp_unschedule_hook('pod_importer_cron_event');
 
     $feeds = pod_importer_get_feeds();
     $site_tz = new \DateTimeZone(wp_timezone_string());

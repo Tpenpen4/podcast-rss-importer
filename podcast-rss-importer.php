@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) exit;
 // Plugin update checker
 require 'plugin-update-checker/plugin-update-checker.php';
 $myUpdateChecker = YahnisElsts\PluginUpdateChecker\v5\PucFactory::buildUpdateChecker(
-    'https://github.com/yutof/podcast-rss-importer/raw/main/update.json',
+    'https://github.com/Tpenpen4/podcast-rss-importer/raw/main/update.json',
     __FILE__,
     'podcast-rss-importer',
     1 // Check for updates every hour.

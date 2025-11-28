@@ -110,7 +110,7 @@ add_action('pod_importer_cron_event', 'pod_importer_execute_scheduled_import', 1
  * @param array $args Arguments passed from the cron event, must contain 'feed_index'.
  */
 function pod_importer_execute_scheduled_import($args) {
-    error_log('Podcast Importer Cron Executed. Args: ' . print_r($args, true));
+    error_log('Podcast Importer Cron: Task started with args: ' . print_r($args, true));
     if (!isset($args['feed_index'])) {
         error_log('Podcast Importer Cron Error: feed_index not provided in cron arguments.');
         return;
@@ -124,16 +124,18 @@ function pod_importer_execute_scheduled_import($args) {
         // check if this specific event is already running.
         $lock_transient_key = 'pod_importer_lock_' . md5(serialize($args));
         if (get_transient($lock_transient_key)) {
+            error_log('Podcast Importer Cron: Import for feed ' . $feed_index . ' is already running. Skipping.');
             return; // Already running.
         }
         
         set_transient($lock_transient_key, true, 60 * 15); // Lock for 15 minutes.
         
+        error_log('Podcast Importer Cron: Processing feed index ' . $feed_index . '. Data: ' . print_r($feeds[$feed_index], true));
         pod_importer_import_feed($feeds[$feed_index]);
 
         delete_transient($lock_transient_key); // Unlock.
     } else {
-        error_log('Podcast Importer Cron Error: Invalid feed_index ' . $feed_index . ' provided in cron arguments.');
+        error_log('Podcast Importer Cron Error: Invalid feed_index ' . $feed_index . ' provided in cron arguments. Feeds array: ' . print_r($feeds, true));
     }
 }
 
@@ -159,6 +161,11 @@ function pod_importer_get_attachment_by_source_url($source_url) {
 }
 
 function pod_importer_import_feed($feed) {
+    if (!is_array($feed) || !isset($feed['url']) || empty(trim($feed['url']))) {
+        error_log('Podcast Importer Import Error: Feed data is invalid or URL is empty. Data received: ' . print_r($feed, true));
+        return;
+    }
+
     error_log('Podcast Importer: Starting import for ' . $feed['url']);
     include_once(ABSPATH . WPINC . '/feed.php');
     $feed_url = $feed['url'];
@@ -169,6 +176,7 @@ function pod_importer_import_feed($feed) {
 
     if (is_wp_error($rss)) {
         error_log('Podcast Importer Error: Failed to fetch feed ' . $feed_url . '. Error: ' . $rss->get_error_message());
+        error_log('Podcast Importer Error Details: ' . print_r($rss, true));
         if (defined('WP_DEBUG') && WP_DEBUG) {
             error_log('Podcast Importer Error: Failed to fetch feed ' . $feed_url . '. Error: ' . $rss->get_error_message());
         }

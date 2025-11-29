@@ -1,9 +1,9 @@
 {
     "name": "Podcast Importer",
-    "version": "0.9.4",
-    "download_url": "https://github.com/tpenpen4/podcast-rss-importer/releases/download/v0.9.2/podcast-rss-importer.zip" ,
+    "version": "0.9.4.1",
+    "download_url": "https://github.com/tpenpen4/podcast-rss-importer/releases/download/v0.9.4.1/podcast-rss-importer.zip" ,
     "sections": {
         "description": "ポッドキャストをRSSで自動更新するプラグインです。",
-        "changelog": "今度こそ治るといいな。"
+        "changelog": "今度こそ治るといいな。2"
     }
 }

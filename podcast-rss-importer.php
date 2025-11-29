@@ -2,7 +2,11 @@
 /**
  * Plugin Name: Podcast Importer
  * Description: ポッドキャストをRSSで自動更新！
+<<<<<<< HEAD
  * Version: 0.9.4.1
+=======
+ * Version: 0.9.4
+>>>>>>> 183818f9c034e2b093dc5f51101ffedf3722222b
  * Author: よん。
  */
 if (!defined('ABSPATH')) exit;
